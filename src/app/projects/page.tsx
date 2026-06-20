@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Briefcase, Plus, FileText, CheckCircle, Clock, Trash2, ArrowRight, ArrowLeft, Loader2, Calendar } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Plus, FileText, CheckCircle, Trash2, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import GlowingCard from '@/components/glowing-card';
 
 interface Project {
@@ -58,7 +58,7 @@ export default function ProjectsPage() {
   const [noteProjId, setNoteProjId] = useState('');
   const [noteLoading, setNoteLoading] = useState(false);
 
-  const fetchProjectData = async () => {
+  const fetchProjectData = useCallback(async () => {
     try {
       const res = await fetch('/api/projects');
       if (!res.ok) throw new Error('Failed to load project details');
@@ -68,19 +68,22 @@ export default function ProjectsPage() {
       setNotes(data.notes);
       
       if (data.projects.length > 0) {
-        if (!taskProjId) setTaskProjId(data.projects[0].id);
-        if (!noteProjId) setNoteProjId(data.projects[0].id);
+        setTaskProjId(prev => prev || data.projects[0].id);
+        setNoteProjId(prev => prev || data.projects[0].id);
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchProjectData();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchProjectData();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [fetchProjectData]);
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();

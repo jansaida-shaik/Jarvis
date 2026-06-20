@@ -15,12 +15,16 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     // Read the auth_token cookie
     const hasToken = typeof document !== 'undefined' && document.cookie.split(';').some((item) => item.trim().startsWith('auth_token='));
     
-    if (!hasToken && !isAuthPage) {
-      setIsAuthenticated(false);
-      router.push('/auth/login');
-    } else {
-      setIsAuthenticated(true);
-    }
+    const timer = setTimeout(() => {
+      if (!hasToken && !isAuthPage) {
+        setIsAuthenticated(false);
+        router.push('/auth/login');
+      } else {
+        setIsAuthenticated(true);
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [pathname, isAuthPage, router]);
 
   // Prevent flash of content on protected routes

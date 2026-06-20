@@ -14,6 +14,7 @@ export interface VoiceManagerOptions {
 
 export class VoiceManager {
   private state: VoiceState = 'IDLE';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private recognition: any = null;
   private synthesisQueue: string[] = [];
   private currentUtterance: SpeechSynthesisUtterance | null = null;
@@ -34,8 +35,8 @@ export class VoiceManager {
   private initSpeechRecognition() {
     if (typeof window === 'undefined') return;
 
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       this.options.onError('Web Speech Recognition API is not supported in this browser. Please use Chrome or Safari.');
@@ -52,6 +53,7 @@ export class VoiceManager {
       this.setState('LISTENING');
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.recognition.onresult = (event: any) => {
       let interimTranscript = '';
       let finalTranscript = '';
@@ -79,6 +81,7 @@ export class VoiceManager {
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.recognition.onerror = (event: any) => {
       // Ignore 'no-speech' error to prevent logs bloat in continuous loop
       if (event.error !== 'no-speech') {
@@ -175,7 +178,7 @@ export class VoiceManager {
     this.currentUtterance = null;
   }
 
-  private async submitPrompt(promptText: string) {
+  public async submitPrompt(promptText: string) {
     if (!this.isSessionActive) return;
     
     this.setState('THINKING');
@@ -250,9 +253,10 @@ export class VoiceManager {
 
       this.options.onFinishedResponse(this.currentResponseText);
 
-    } catch (err: any) {
-      console.error(err);
-      this.options.onError(err.message || 'Failed connecting to Jarvis Voice API.');
+    } catch (err) {
+      const errorObj = err instanceof Error ? err : new Error(String(err));
+      console.error(errorObj);
+      this.options.onError(errorObj.message || 'Failed connecting to Jarvis Voice API.');
       this.restartListening();
     }
   }

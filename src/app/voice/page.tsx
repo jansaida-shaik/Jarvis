@@ -52,7 +52,7 @@ export default function VoicePage() {
   const voiceManagerRef = useRef<VoiceManager | null>(null);
 
   // Fetch background details for context list
-  const fetchContextData = async () => {
+  const fetchContextData = useCallback(async () => {
     try {
       const res = await fetch('/api/dashboard');
       if (res.status === 401) {
@@ -67,10 +67,12 @@ export default function VoicePage() {
     } catch (e) {
       console.warn('Failed to load dashboard context data:', e);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
-    fetchContextData();
+    const timer = setTimeout(() => {
+      fetchContextData();
+    }, 0);
     
     // Initialize VoiceManager
     voiceManagerRef.current = new VoiceManager({
@@ -95,10 +97,12 @@ export default function VoicePage() {
     });
 
     return () => {
+      clearTimeout(timer);
       if (voiceManagerRef.current) {
         voiceManagerRef.current.stopSession();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync mode changes with voice manager instance
@@ -132,7 +136,10 @@ export default function VoicePage() {
       }, 80);
       return () => clearInterval(interval);
     } else {
-      setWaveBars(new Array(16).fill(8));
+      const timer = setTimeout(() => {
+        setWaveBars(new Array(16).fill(8));
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [voiceState]);
 
@@ -153,7 +160,7 @@ export default function VoicePage() {
       // Ensure session is active
       voiceManagerRef.current.startSession();
       // Directly submit prompt
-      (voiceManagerRef.current as any).submitPrompt(text);
+      voiceManagerRef.current.submitPrompt(text);
     }
   };
 
@@ -315,18 +322,18 @@ export default function VoicePage() {
             {/* Mode selectors */}
             <div className="md:col-span-1 flex flex-col gap-2">
               <span className="text-[10px] font-mono tracking-wider font-bold text-slate-500">DIAGNOSTIC MODE</span>
-              {[
+              {([
                 { id: 'general', name: 'General', icon: Sparkles },
                 { id: 'learning', name: 'Learning', icon: GraduationCap },
                 { id: 'career', name: 'Career Coach', icon: Briefcase },
                 { id: 'decision', name: 'Decision Advisor', icon: GitBranch },
-              ].map((m) => {
+              ] as const).map((m) => {
                 const Icon = m.icon;
                 const isActive = activeMode === m.id;
                 return (
                   <button
                     key={m.id}
-                    onClick={() => setActiveMode(m.id as any)}
+                    onClick={() => setActiveMode(m.id)}
                     className={`flex items-center gap-2.5 text-xs font-semibold px-4 py-3 rounded-xl border text-left cursor-pointer transition-all ${
                       isActive
                         ? 'bg-[rgba(99,102,241,0.08)] border-[rgba(99,102,241,0.25)] text-indigo-300 shadow-sm shadow-indigo-500/5'
@@ -381,17 +388,17 @@ export default function VoicePage() {
           {/* Quick Voice simulation buttons */}
           <GlowingCard title="Quick Topic Overrides" subtitle="Trigger voice flows with single click tests">
             <div className="flex flex-col gap-2.5 mt-2">
-              {[
+              {([
                 { title: 'Explain Left Join', mode: 'learning', text: 'Explain left join' },
                 { title: 'Recommend Next Study Topic', mode: 'career', text: 'What should I learn next?' },
                 { title: 'Zoho CRM vs Badminton Platform', mode: 'decision', text: 'I am confused between Zoho CRM, AI and my badminton platform' },
                 { title: 'Tell me about Canada', mode: 'general', text: 'Tell me about Canada' },
                 { title: 'What is Next.js?', mode: 'general', text: 'What is Next.js?' }
-              ].map((over, i) => (
+              ] as const).map((over, i) => (
                 <button
                   key={i}
                   onClick={() => {
-                    setActiveMode(over.mode as any);
+                    setActiveMode(over.mode);
                     triggerMockPrompt(over.text);
                   }}
                   className="flex items-center justify-between text-left p-3.5 rounded-xl bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(99,102,241,0.04)] hover:border-[rgba(99,102,241,0.2)] cursor-pointer group transition-all"
