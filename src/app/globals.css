@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #05050a; /* Deep space dark backdrop */
+  --foreground: #e2e8f0; /* Slate light text */
+  --card-bg: rgba(10, 10, 20, 0.7); /* Obsidian glass base */
+  --card-border: rgba(99, 102, 241, 0.15); /* Indigo edge */
+  --accent-rgb: 99, 102, 241; /* Violet-Indigo glow */
+  --cyan-rgb: 20, 184, 166; /* Cyan details */
+  --purple-rgb: 139, 92, 246; /* Royal violet */
+  
+  --primary: 99, 102, 241;
+  --secondary: 139, 92, 246;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-accent: rgb(var(--accent-rgb));
+  --color-cyan-glow: rgb(var(--cyan-rgb));
+  --color-purple-glow: rgb(var(--purple-rgb));
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 90% 90%, rgba(20, 184, 166, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.03) 0px, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* Custom Glassmorphism Panels */
+.glass {
+  background: rgba(10, 10, 22, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-accent {
+  background: rgba(99, 102, 241, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Glow Typography */
+.glow-text {
+  text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+}
+
+.glow-text-cyan {
+  text-shadow: 0 0 12px rgba(20, 184, 166, 0.5);
+}
+
+/* Neon card glow borders */
+.glow-border {
+  box-shadow: 0 0 15px -3px rgba(99, 102, 241, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glow-border:hover {
+  box-shadow: 0 0 22px 0px rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 15px 0 rgba(99, 102, 241, 0.2);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 25px 5px rgba(99, 102, 241, 0.4);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
 }

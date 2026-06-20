@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JAN AI — Personal AI Operating System
 
-## Getting Started
+JAN AI is a personal operating system that acts as a lifelong learning coach, career advisor, project manager, memory system, and personal assistant. It is a single-user application designed to remember everything important about you, track your learning progress, and help you manage personal and professional projects in a high-fidelity workspace.
 
-First, run the development server:
+## Technology Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4
+* **Backend**: Next.js API Routes, TypeScript
+* **Database**: PostgreSQL & Prisma ORM
+* **Authentication**: Custom JWT Session Cookies & Bcrypt Hashing
+* **AI & Search**: OpenAI GPT models & pgvector (with text search fallback)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Dashboard Console**: Daily dynamic greeting overview, stats cards (Goals, Skills, Study Hours, Active Projects), metrics gauges, and activity streams.
+2. **AI Chat Terminal**: Streaming chatbot responses, searchable history, and local text/PDF attachments.
+3. **Long-Term Memory OS**: Auto-extracts memory nodes from chats, organizes categories, and supports vector similarity search.
+4. **Goals & Milestones**: Focus targets, checklist items, progress indicators, and automated milestone completion statistics.
+5. **Learning roadmaps**: Skill inventories with proficiency states, study roadmaps, and session tracking.
+6. **Project Kanban Boards**: Board columns (To Do, In Progress, Completed), task prioritizing, project spaces, and note files.
+7. **Knowledge Base**: Text/markdown file uploads via FileReader and PDF metadata parsing.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Local Setup & Quickstart
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
+* **Node.js**: `v20` or higher
+* **NPM**: `v10` or higher
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Setup Instructions
 
-## Deploy on Vercel
+1. **Clone/Open Workspace**:
+   Open the directory inside your IDE:
+   `/Users/jansaidashaik/Jarvis`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Configure Environment Variables**:
+   Open `.env` and fill in your connection details:
+   ```env
+   DATABASE_URL="file:./dev.db"
+   JWT_SECRET="jan-ai-super-secret-key-9988"
+   OPENAI_API_KEY="your-openai-api-key"
+   ```
+   *Note: If no `OPENAI_API_KEY` is provided, the chat console runs a mock response engine that simulates replies and continues auto-saving memory logs for offline evaluation.*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+4. **Synchronize Schema & Compile Client**:
+   This maps the prisma schemas to the database and builds the client bindings:
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Load Seed Data**:
+   This pre-seeds user profile `jansaida1234@gmail.com` (password: `password123`) and inputs mock goals, roadmaps, and tasks to populate the metrics dashboard immediately:
+   ```bash
+   node prisma/seed.js
+   ```
+
+6. **Start Dev Server**:
+   ```bash
+   npm run dev
+   ```
+
+7. **Log In**:
+   Visit `http://localhost:3000` and sign in using:
+   * **Email**: `jansaida1234@gmail.com`
+   * **Password**: `password123`
