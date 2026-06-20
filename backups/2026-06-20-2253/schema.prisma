@@ -1,0 +1,376 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  name           String?
+  passwordHash   String
+  avatarUrl      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  xp             Int             @default(0)
+  level          Int             @default(1)
+  badgesJson     String          @default("[]")
+  goals          Goal[]
+  projects       Project[]
+  tasks          Task[]
+  notes          Note[]
+  memories       Memory[]
+  skills         Skill[]
+  learningPlans  LearningPlan[]
+  sessions       LearningSession[]
+  documents      Document[]
+  conversations  Conversation[]
+  activities       AgentActivity[]
+  cognitiveProfile CognitiveProfile?
+  learningProfile  LearningProfile?
+  decisions        DecisionHistory[]
+  insights         CoachingInsight[]
+  executiveInsights  ExecutiveInsight[]
+  executiveBriefings ExecutiveBriefing[]
+}
+
+model Goal {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  category    String      // e.g., CAREER, HEALTH, CODING, FINANCE
+  status      String      // ACTIVE, COMPLETED, ON_HOLD
+  targetDate  DateTime?
+  progress    Int         @default(0) // 0-100
+  milestones  Milestone[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Milestone {
+  id          String    @id @default(uuid())
+  goalId      String
+  goal        Goal      @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      String    // TODO, COMPLETED
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      String    // PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD
+  startDate   DateTime?
+  endDate     DateTime?
+  tasks       Task[]
+  notes       Note[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId   String?
+  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  status      String    // TODO, IN_PROGRESS, COMPLETED
+  priority    String    // LOW, MEDIUM, HIGH, URGENT
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Note {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId  String?
+  project    Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title      String
+  content    String
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Memory {
+  id        String                 @id @default(uuid())
+  userId    String
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  category  String                 // LEARNING, CAREER, PERSONAL, PROJECT, GENERAL
+  sentiment String?                // POSITIVE, NEUTRAL, NEGATIVE
+  embedding String?              // SQLite fallback: stores vector as stringified JSON array
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+}
+
+model Skill {
+  id               String            @id @default(uuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  category         String            // e.g., TECHNICAL, DESIGN, COGNITIVE
+  proficiencyLevel String            // BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
+  sessions         LearningSession[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model LearningPlan {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  status          String            // ACTIVE, COMPLETED
+  recommendations String?           // JSON structure or narrative
+  sessions        LearningSession[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model LearningSession {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId         String?
+  skill           Skill?        @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  planId          String?
+  plan            LearningPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  durationMinutes Int
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Document {
+  id        String                 @id @default(uuid())
+  userId    String
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  fileUrl   String?
+  fileType  String?
+  isIndexed Boolean                @default(false)
+  embedding String?              // SQLite fallback
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // USER, ASSISTANT
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model AgentActivity {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agentType    String   // RESEARCH, LEARNING, PROJECT
+  activityType String   // e.g., MEMORY_EXTRACTION, SUGGEST_TASKS
+  status       String   // RUNNING, SUCCESS, FAILED
+  details      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CognitiveProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entries   CognitiveProfileEntry[]
+  versions  CognitiveProfileVersion[]
+}
+
+model CognitiveProfileEntry {
+  id              String   @id @default(uuid())
+  profileId       String
+  profile         CognitiveProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  // Layer: IDENTITY, SKILLS, LEARNING, CAREER, PROJECTS, DECISION, PRODUCTIVITY, STRENGTHS, WEAKNESS, INTEREST, VISION, RELATIONSHIP, MEMORY
+  layer           String   
+  
+  // Specific key (e.g. "current_role", "salary_goals", "peak_productivity_periods")
+  key             String
+  
+  // Stored JSON payload (supports nested structures, lists, or plain string values)
+  value           String
+  
+  confidenceScore Float    @default(1.0) // Scale 0.0 to 1.0
+  source          String   // e.g. "AI_CHAT_LLM", "USER_MANUAL", "AI_CHAT_HEURISTIC"
+  sourceReference String?  // Message ID or Session ID
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  history         CognitiveProfileHistory[]
+
+  @@unique([profileId, layer, key])
+}
+
+model CognitiveProfileHistory {
+  id              String   @id @default(uuid())
+  entryId         String
+  entry           CognitiveProfileEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  
+  oldValue        String?
+  newValue        String
+  oldConfidence   Float?
+  newConfidence   Float
+  
+  changeType      String   // "CREATE", "UPDATE", "DELETE", "CONFIDENCE_ADJUSTMENT"
+  reason          String?  // AI explanation or user justification
+  source          String
+  sourceReference String?
+  
+  timestamp       DateTime @default(now())
+}
+
+model CognitiveProfileVersion {
+  id            String   @id @default(uuid())
+  profileId     String
+  profile       CognitiveProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  version       Int      // Sequential version number
+  stateSnapshot String   // Serialized JSON of all active entries
+  description   String?  // e.g., "Updated during onboarding chat"
+  
+  createdAt     DateTime @default(now())
+}
+
+model CognitiveProfileAuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String   // e.g., "AUTO_EXTRACTED", "CONTRADICTION_DETECTED", "MANUAL_EDIT"
+  details   String
+  metadata  String?  // JSON context
+  timestamp DateTime @default(now())
+}
+
+model LearningProfile {
+  id             String             @id @default(uuid())
+  userId         String             @unique
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  retentionScore Float              @default(0.8)
+  lastSessionAt  DateTime           @default(now())
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  progress       LearningProgress[]
+}
+
+model LearningProgress {
+  id                 String           @id @default(uuid())
+  profileId          String
+  profile            LearningProfile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  topic              String
+  understandingScore Float            @default(0.0)
+  confidenceScore    Float            @default(0.0)
+  lastReviewedAt     DateTime         @default(now())
+  reviewCount        Int              @default(0)
+  historyJson        String           @default("[]")
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  masteries          ConceptMastery[]
+
+  @@unique([profileId, topic])
+}
+
+model ConceptMastery {
+  id                 String           @id @default(uuid())
+  progressId         String
+  progress           LearningProgress @relation(fields: [progressId], references: [id], onDelete: Cascade)
+  concept            String
+  status             String           // LEARNED, MASTERED, PARTIALLY_UNDERSTOOD, REPEATEDLY_MISUNDERSTOOD
+  misunderstandCount Int              @default(0)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@unique([progressId, concept])
+}
+
+model DecisionHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  optionsJson     String   @default("[]")
+  tradeoffsJson   String   @default("{}")
+  assumptionsJson String   @default("[]")
+  recommendation  String
+  status          String   @default("LOGGED")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model CoachingInsight {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // STALLED_GOAL, MISSING_SKILL, WEAK_LEARNING_AREA, REPEATED_MISTAKE
+  trigger   String
+  advice    String
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ExecutiveInsight {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type           String   // GOAL_DRIFT, LEARNING_GAP, PROJECT_RISK, DECISION_PATTERN, OPPORTUNITY
+  title          String
+  insight        String
+  confidence     Float    @default(0.8) // 0.0 to 1.0
+  evidenceJson   String   @default("[]") // JSON string array of evidence points
+  recommendation String
+  status         String   @default("ACTIVE") // ACTIVE, DISMISSED, RESOLVED
+  followUpStatus String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ExecutiveBriefing {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeframe          String   // DAILY, WEEKLY, MONTHLY
+  summary            String
+  insightsJson       String   @default("[]") // JSON string snapshot of insights involved
+  recommendationsJson String  @default("[]") // JSON string list of recommendations
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}

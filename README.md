@@ -1,6 +1,6 @@
-# JAN AI — Personal AI Operating System
+# JARVIS — Personal AI Operating System
 
-JAN AI is a personal operating system that acts as a lifelong learning coach, career advisor, project manager, memory system, and personal assistant. It is a single-user application designed to remember everything important about you, track your learning progress, and help you manage personal and professional projects in a high-fidelity workspace.
+JARVIS is a personal operating system that acts as a lifelong learning coach, career advisor, project manager, memory system, and personal assistant. It is a single-user application designed to remember everything important about you, track your learning progress, and help you manage personal and professional projects in a high-fidelity workspace.
 
 ## Technology Stack
 
@@ -40,7 +40,7 @@ JAN AI is a personal operating system that acts as a lifelong learning coach, ca
    Open `.env` and fill in your connection details:
    ```env
    DATABASE_URL="file:./dev.db"
-   JWT_SECRET="jan-ai-super-secret-key-9988"
+   JWT_SECRET="jarvis-super-secret-key-9988"
    OPENAI_API_KEY="your-openai-api-key"
    ```
    *Note: If no `OPENAI_API_KEY` is provided, the chat console runs a mock response engine that simulates replies and continues auto-saving memory logs for offline evaluation.*

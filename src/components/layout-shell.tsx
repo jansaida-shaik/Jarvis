@@ -29,7 +29,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <div className="min-h-screen bg-[#05050a] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 animate-spin" />
-          <span className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase">BOOTING JAN AI...</span>
+          <span className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase">BOOTING JARVIS...</span>
         </div>
       </div>
     );

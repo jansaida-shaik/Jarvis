@@ -155,7 +155,7 @@ async function main() {
   const project1 = await prisma.project.create({
     data: {
       userId: user.id,
-      name: 'Jan AI Core Platform',
+      name: 'Jarvis Core Platform',
       description: 'Development of the Next.js personal OS interface, database layer, and agent routes.',
       status: 'IN_PROGRESS',
       startDate: new Date(),
@@ -228,8 +228,8 @@ async function main() {
   await prisma.document.create({
     data: {
       userId: user.id,
-      title: 'Jan AI System Overview',
-      content: 'Jan AI is designed as a single-user companion. It runs locally or on Vercel, utilizes Neon Postgres for production, and exposes dashboard metrics, interactive roadmaps, and chat panels.',
+      title: 'Jarvis System Overview',
+      content: 'Jarvis is designed as a single-user companion. It runs locally or on Vercel, utilizes Neon Postgres for production, and exposes dashboard metrics, interactive roadmaps, and chat panels.',
       fileType: 'TXT',
       isIndexed: true,
     },
@@ -246,14 +246,14 @@ async function main() {
   await prisma.message.createMany({
     data: [
       { conversationId: conversation.id, role: 'USER', content: 'Who are you and what can you do?' },
-      { conversationId: conversation.id, role: 'ASSISTANT', content: 'I am your Jan AI Personal Operating System. I manage your goals, roadmaps, learning plans, project tasks, and memories. I remember details about you to help you work faster and learn smarter.' },
+      { conversationId: conversation.id, role: 'ASSISTANT', content: 'I am your Jarvis Personal Operating System. I manage your goals, roadmaps, learning plans, project tasks, and memories. I remember details about you to help you work faster and learn smarter.' },
     ],
   });
 
   // Create Agent Activity
   await prisma.agentActivity.createMany({
     data: [
-      { userId: user.id, agentType: 'PROJECT', activityType: 'TASK_SUGGESTION', status: 'SUCCESS', details: 'Suggested 2 tasks for Project "Jan AI Core Platform".' },
+      { userId: user.id, agentType: 'PROJECT', activityType: 'TASK_SUGGESTION', status: 'SUCCESS', details: 'Suggested 2 tasks for Project "Jarvis Core Platform".' },
       { userId: user.id, agentType: 'LEARNING', activityType: 'PLAN_GENERATION', status: 'SUCCESS', details: 'Successfully generated AI Engineering roadmap.' },
     ],
   });

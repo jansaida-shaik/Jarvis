@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { prisma } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'jan-ai-super-secret-key-9988';
+const JWT_SECRET = process.env.JWT_SECRET || '27c7ea17d658d27b88f89f1d3301251b9e36c11e7d103dbf6ea0877fad092127';
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);

@@ -57,7 +57,7 @@ export default function LoginPage() {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
             <span className="text-white font-extrabold text-2xl">J</span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-wide mt-2">Welcome to Jan AI</h1>
+          <h1 className="text-2xl font-bold text-white tracking-wide mt-2">Welcome to Jarvis</h1>
           <p className="text-xs text-slate-400">Initialize your personal AI operating system</p>
         </div>
 

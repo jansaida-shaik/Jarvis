@@ -71,8 +71,8 @@ export default function Sidebar() {
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="font-bold text-white text-md tracking-wider">JAN AI</span>
-              <span className="text-[10px] text-indigo-400 font-mono">PERSONAL OS v1.0</span>
+              <span className="font-bold text-white text-md tracking-wider">JARVIS</span>
+              <span className="text-[10px] text-indigo-400 font-mono">JARVIS OS v1.0</span>
             </div>
           )}
         </div>

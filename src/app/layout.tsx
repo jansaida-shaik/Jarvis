@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Jan AI | Personal OS',
+  title: 'Jarvis | Personal OS',
   description: 'A personal AI Operating System for memory, learning, roadmaps, and career growth.',
 };
 

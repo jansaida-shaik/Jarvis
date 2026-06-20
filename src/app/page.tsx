@@ -142,7 +142,7 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[rgba(255,255,255,0.04)] pb-6">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-            Console Terminal <span className="text-indigo-400 glow-text font-light">Jan AI</span>
+            Console Terminal <span className="text-indigo-400 glow-text font-light">Jarvis</span>
           </h1>
           <p className="text-sm text-slate-400 font-medium">
             Status: online. Memory synched. 2 agent actions recorded.
