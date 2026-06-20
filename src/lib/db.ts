@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Self-contained .env loader to ensure database URLs are always available to Prisma
-if (!process.env.POSTGRES_PRISMA_URL || !process.env.POSTGRES_URL) {
+if (!process.env.PRISMA_DATABASE_URL) {
   try {
     const searchPaths = [
       path.resolve(/*turbopackIgnore: true*/ process.cwd(), '.env'),
@@ -27,11 +27,8 @@ if (!process.env.POSTGRES_PRISMA_URL || !process.env.POSTGRES_URL) {
               if (key === 'DATABASE_URL' && !process.env.DATABASE_URL) {
                 process.env.DATABASE_URL = value;
               }
-              if (key === 'POSTGRES_PRISMA_URL' && !process.env.POSTGRES_PRISMA_URL) {
-                process.env.POSTGRES_PRISMA_URL = value;
-              }
-              if (key === 'POSTGRES_URL' && !process.env.POSTGRES_URL) {
-                process.env.POSTGRES_URL = value;
+              if (key === 'PRISMA_DATABASE_URL' && !process.env.PRISMA_DATABASE_URL) {
+                process.env.PRISMA_DATABASE_URL = value;
               }
               if (key === 'JWT_SECRET' && !process.env.JWT_SECRET) {
                 process.env.JWT_SECRET = value;
@@ -51,11 +48,8 @@ if (!process.env.POSTGRES_PRISMA_URL || !process.env.POSTGRES_URL) {
 }
 
 // Fallback logic for local development if Vercel environment variables are not set
-if (!process.env.POSTGRES_PRISMA_URL) {
-  process.env.POSTGRES_PRISMA_URL = process.env.DATABASE_URL || 'file:./dev.db';
-}
-if (!process.env.POSTGRES_URL) {
-  process.env.POSTGRES_URL = process.env.DATABASE_URL || 'file:./dev.db';
+if (!process.env.PRISMA_DATABASE_URL) {
+  process.env.PRISMA_DATABASE_URL = process.env.DATABASE_URL || 'file:./dev.db';
 }
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
