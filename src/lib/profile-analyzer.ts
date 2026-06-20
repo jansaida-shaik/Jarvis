@@ -1,6 +1,6 @@
 import { prisma } from './db';
 import OpenAI from 'openai';
-import { CognitiveProfileEntry } from '../../generated/prisma/client';
+import { CognitiveProfileEntry } from '@/generated/prisma/client';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy-key-to-prevent-sdk-crash',
